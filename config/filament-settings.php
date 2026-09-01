@@ -14,9 +14,9 @@ return [
     */
 
     'navigation' => [
-        'label' => 'Settings',
+        'label' => 'Configurations',
         'icon'  => 'heroicon-o-cog-6-tooth',
-        'group' => null,
+        'group' => 'Système',
         'sort'  => 100,
     ],
 

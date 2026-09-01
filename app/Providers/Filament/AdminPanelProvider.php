@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -11,6 +11,8 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Hydrat\TableLayoutToggle\Persisters\LocalStoragePersister;
+use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -18,6 +20,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Islamv\FilamentSettingsPlugin\FilamentSettingsPlugin;
+use LaBoiteACode\FilamentDashboardWidgets\FilamentDashboardWidgetsPlugin;
 use MKWebDesign\FilamentWatchdog\FilamentWatchdogPlugin;
 use Prodstarter\FilamentNotificationCenter\FilamentNotificationCenterPlugin;
 use Prodstarter\FilamentNotificationCenter\NotificationCenterCategory;
@@ -44,15 +47,30 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->plugins([
-                FilamentSettingsPlugin::make(),
+                FilamentSettingsPlugin::make()
+                    ->removeTab('social-links'),
                 FilamentWatchdogPlugin::make(),
                 FilamentNotificationCenterPlugin::make()
                     ->categories(self::dataCategoriesNotification())
                     ->defaultCategory('general')
                     ->emptyStateUsing(fn (string $categoryId): array => [
-                        'heading' => "Nothing here yet",
+                        'heading' => 'Nothing here yet',
                         'description' => "You're all caught up in {$categoryId}.",
                     ]),
+                FilamentLogViewer::make(),
+                TableLayoutTogglePlugin::make()
+                    ->persistLayoutUsing(
+                        persister: LocalStoragePersister::class,
+                        cacheStore: 'redis',
+                        cacheTtl: 60 * 24,
+                    )
+                    ->displayToggleAction()
+                    ->toggleActionHook('tables::toolbar.search.after') // chose the Filament view hook to render the button on
+                    ->listLayoutButtonIcon('heroicon-o-list-bullet')
+                    ->gridLayoutButtonIcon('heroicon-o-squares-2x2'),
+
+                FilamentDashboardWidgetsPlugin::make(),
+
             ])
             ->middleware([
                 EncryptCookies::class,
