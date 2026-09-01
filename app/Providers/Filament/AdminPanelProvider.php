@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -10,14 +11,20 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
+use Hydrat\TableLayoutToggle\Persisters\LocalStoragePersister;
+use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Islamv\FilamentSettingsPlugin\FilamentSettingsPlugin;
+use LaBoiteACode\FilamentDashboardWidgets\FilamentDashboardWidgetsPlugin;
+use MKWebDesign\FilamentWatchdog\FilamentWatchdogPlugin;
+use Prodstarter\FilamentNotificationCenter\FilamentNotificationCenterPlugin;
+use Prodstarter\FilamentNotificationCenter\NotificationCenterCategory;
+use ToneGabes\Filament\Icons\Enums\Phosphor;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,7 +34,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
+            ->databaseNotifications()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -37,9 +46,31 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+            ->plugins([
+                FilamentSettingsPlugin::make()
+                    ->removeTab('social-links'),
+                FilamentWatchdogPlugin::make(),
+                FilamentNotificationCenterPlugin::make()
+                    ->categories(self::dataCategoriesNotification())
+                    ->defaultCategory('general')
+                    ->emptyStateUsing(fn (string $categoryId): array => [
+                        'heading' => 'Nothing here yet',
+                        'description' => "You're all caught up in {$categoryId}.",
+                    ]),
+                FilamentLogViewer::make(),
+                TableLayoutTogglePlugin::make()
+                    ->persistLayoutUsing(
+                        persister: LocalStoragePersister::class,
+                        cacheStore: 'redis',
+                        cacheTtl: 60 * 24,
+                    )
+                    ->displayToggleAction()
+                    ->toggleActionHook('tables::toolbar.search.after') // chose the Filament view hook to render the button on
+                    ->listLayoutButtonIcon('heroicon-o-list-bullet')
+                    ->gridLayoutButtonIcon('heroicon-o-squares-2x2'),
+
+                FilamentDashboardWidgetsPlugin::make(),
+
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -55,5 +86,52 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+    }
+
+    private static function dataCategoriesNotification(): array
+    {
+        return [
+            NotificationCenterCategory::make('tiers')
+                ->label('Tiers')
+                ->icon(Phosphor::Users)
+                ->color(Color::Teal)
+                ->order(1),
+
+            NotificationCenterCategory::make('chantiers')
+                ->label('Chantiers')
+                ->icon(Phosphor::HardHat)
+                ->color(Color::Orange)
+                ->order(2),
+
+            NotificationCenterCategory::make('articles')
+                ->label('Articles')
+                ->icon(Phosphor::BoxArrowUp)
+                ->color(Color::Amber)
+                ->order(3),
+
+            NotificationCenterCategory::make('commerces')
+                ->label('Commerces')
+                ->icon(Phosphor::ShoppingBag)
+                ->color(Color::Blue)
+                ->order(4),
+
+            NotificationCenterCategory::make('rh')
+                ->label('RH')
+                ->icon(Phosphor::UserSquare)
+                ->color(Color::Indigo)
+                ->order(5),
+
+            NotificationCenterCategory::make('flottes')
+                ->label('Flottes')
+                ->icon(Phosphor::Truck)
+                ->color(Color::Gray)
+                ->order(6),
+
+            NotificationCenterCategory::make('ateliers')
+                ->label('Ateliers')
+                ->icon(Phosphor::Factory)
+                ->color(Color::Amber)
+                ->order(7),
+        ];
     }
 }

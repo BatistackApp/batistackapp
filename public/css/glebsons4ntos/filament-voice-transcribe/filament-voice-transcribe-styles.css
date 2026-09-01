@@ -1,0 +1,193 @@
+.fi-voice-transcribe-layout {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.fi-voice-transcribe-layout > .fi-input-wrp {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.fi-voice-transcribe-inline {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.fi-voice-transcribe-side {
+    display: flex;
+    align-items: center;
+}
+
+.fi-voice-transcribe-side-prefix {
+    margin-right: 1.25rem;
+}
+
+.fi-voice-transcribe-side-suffix {
+    margin-left: 1.25rem;
+}
+
+.fi-voice-speak-layout {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.fi-voice-speak-content {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    gap: 0.5rem;
+}
+
+.fi-voice-speak-text {
+    min-width: 0;
+}
+
+.fi-voice-speak-side {
+    display: flex;
+    align-items: center;
+}
+
+.fi-voice-speak-side-prefix {
+    margin-right: 1.25rem;
+}
+
+.fi-voice-speak-side-suffix {
+    margin-left: 1.25rem;
+}
+
+.fi-voice-transcribe-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 9999px;
+    color: rgb(107 114 128);
+    background: transparent;
+    cursor: pointer;
+    transition:
+        color 150ms ease,
+        background-color 150ms ease,
+        opacity 150ms ease,
+        transform 150ms ease;
+}
+
+.fi-voice-transcribe-btn:hover:not(:disabled) {
+    color: rgb(37 99 235);
+    background-color: rgb(239 246 255);
+}
+
+.fi-voice-transcribe-btn:disabled,
+.fi-voice-transcribe-btn-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.fi-voice-transcribe-btn-recording {
+    color: rgb(220 38 38);
+    animation: fi-voice-transcribe-pulse 1.15s ease-in-out infinite;
+}
+
+.fi-voice-transcribe-btn-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.fi-voice-textarea-content {
+    position: relative;
+    width: 100%;
+}
+
+.fi-voice-textarea-input {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.fi-voice-textarea-input-has-left-button {
+    padding-left: 2.75rem;
+}
+
+.fi-voice-textarea-input-has-right-button {
+    padding-right: 2.75rem;
+}
+
+.fi-voice-textarea-input-has-center-button {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.fi-voice-textarea-input-has-top-button {
+    padding-top: 2.75rem;
+}
+
+.fi-voice-textarea-input-has-bottom-button {
+    padding-bottom: 2.75rem;
+}
+
+.fi-voice-textarea-btn {
+    position: absolute;
+    z-index: 1;
+}
+
+.fi-voice-textarea-btn-top-left {
+    top: 0.375rem;
+    left: 0.375rem;
+}
+
+.fi-voice-textarea-btn-top-center {
+    top: 0.375rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.fi-voice-textarea-btn-top-right {
+    top: 0.375rem;
+    right: 0.375rem;
+}
+
+.fi-voice-textarea-btn-center-left {
+    top: 50%;
+    left: 0.375rem;
+    transform: translateY(-50%);
+}
+
+.fi-voice-textarea-btn-center-right {
+    top: 50%;
+    right: 0.375rem;
+    transform: translateY(-50%);
+}
+
+.fi-voice-textarea-btn-bottom-left {
+    bottom: 0.375rem;
+    left: 0.375rem;
+}
+
+.fi-voice-textarea-btn-bottom-center {
+    bottom: 0.375rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.fi-voice-textarea-btn-bottom-right {
+    right: 0.375rem;
+    bottom: 0.375rem;
+}
+
+@keyframes fi-voice-transcribe-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgb(220 38 38 / 0.45);
+    }
+
+    70% {
+        box-shadow: 0 0 0 0.45rem rgb(220 38 38 / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgb(220 38 38 / 0);
+    }
+}
